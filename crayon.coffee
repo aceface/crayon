@@ -5,6 +5,7 @@ An implementation of `chalk` with better performance characteristics
 
 """
 
+chalk = require 'chalk'
 hasColor = require 'has-color'
 stripAnsi = require 'strip-ansi'
 
@@ -41,7 +42,7 @@ makeStyleFunc = (styleNames) ->
   """Creates and returns a function that applies a series of styles to a string (or
       list of string) argument(s)"""
 
-  f = (s0, s1, s2) ->
+  (s0, s1, s2) ->
     """Applies the style #{ styleNames.join '-' } to its (String) arguments"""
 
     switch arguments.length
@@ -58,27 +59,21 @@ makeStyleFunc = (styleNames) ->
 
     s
 
-  if styleNames.length > 2
-    for k, _ of codes
-      do (k) ->
-        sn = styleNames.slice 0
-        Object.defineProperty f, k,
-          enumerable: true
-          configurable: true
-          get: ->
-            makeStyleFunc sn.concat [k]
-          set: (val) ->
-            f[k] = val
-  f
-
 styleFuncs = {}
 
 for i, _ of codes
   styleFuncs[i] = makeStyleFunc [i]
   for j, _ of codes
-    styleFuncs[i][j] = makeStyleFunc [i, j]
+    f = styleFuncs[i][j] = makeStyleFunc [i, j]
     for k, _ of codes
-      styleFuncs[i][j][k] = makeStyleFunc [i, j, k]
+      do (i, j, k) ->
+        Object.defineProperty f, k,
+          enumerable: true
+          configurable: true
+          get: -> chalk[i][j][k]
+          set: (val) ->
+            f[k] = val
+
 
 
 module.exports = styleFuncs
