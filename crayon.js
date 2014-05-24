@@ -44,6 +44,8 @@
     bgWhite: [47, 49]
   };
 
+  basics.grey = basics.gray;
+
   codes = {};
 
   for (styleName in basics) {

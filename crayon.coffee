@@ -43,6 +43,8 @@ basics =
   bgCyan: [46, 49]
   bgWhite: [47, 49]
 
+basics.grey = basics.gray
+
 codes = {}
 for styleName, [begin, end] of basics
   codes[styleName] = ['\u001b[' + begin + 'm', '\u001b[' + end + 'm']
