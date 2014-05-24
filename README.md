@@ -1,9 +1,9 @@
 # <img width="200" height="200" src="logo.png" alt="crayon"> crayon
 =====
 
-A module for adding ANSI terminal colors to your text.
+A very fast, clean, and flexible way to use ANSI colors on your terminal. Crayon supports 256 colors, a clean and chainable API, a few other nifty features, and built-in logging.
 
-Works as a drop-in replacement for [chalk](https://github.com/sindresorhus/chalk), and is faster than chalk, supports 256 colors, a few other nifty features, and built-in logging.
+It works as a drop-in replacement for [chalk](https://github.com/sindresorhus/chalk), but is much faster (~20x) and has additional features.
 
 ## Usage
 
@@ -17,7 +17,7 @@ crayon.red.log('This is red');
 console.log(crayon.blue('Hello world!'))
 
 // Use any CSS color name
-crayon.olivedrab.bgOldlace.info "cute"
+crayon.olivedrab.bgOldlace.info("cute");
 
 // Use hex colors
 crayon("#ffcc00").log("old gold");
