@@ -1,7 +1,7 @@
 {
-  "name": "crayo",
+  "name": "crayon",
   "version": "0.1.0",
-  "description": "crayo - Add colors to text on your terminal. A faster drop-in replacement for chalk that also adds 256 color support",
+  "description": "crayon - Add colors to text on your terminal. A faster drop-in replacement for chalk that also adds 256 color support",
   "main": "crayon.js",
   "dependencies": {
     "has-color": "^0.1.7",
