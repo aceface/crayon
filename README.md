@@ -3,7 +3,7 @@
 
 A very fast, clean, and flexible way to use ANSI colors on your terminal. Crayon supports 256 colors, a clean and chainable API, a few other nifty features, and built-in logging.
 
-It works as a drop-in replacement for [chalk](https://github.com/sindresorhus/chalk), but is much faster (~20x) and has additional features.
+It works as a drop-in replacement for [chalk](https://github.com/sindresorhus/chalk), but is much faster (~20x) and has additional features. Like chalk, it doesn't monkeypatch the `String` prototype the way that the popular [colors](https://github.com/marak/colors.js/) module does.
 
 ## Usage
 
