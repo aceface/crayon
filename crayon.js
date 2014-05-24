@@ -73,6 +73,7 @@
           var f, newStyles;
           newStyles = prevStyles.concat([codes[name]]);
           f = makeStyleFunc(newStyles);
+          f.__doc__ = "Applies the style '" + name + "' to the crayon";
           delete obj[name];
           return obj[name] = f;
         }
@@ -110,7 +111,11 @@
     }
     obj.fg = obj.foreground;
     obj.bg = obj.background;
-    return obj._ = obj.color;
+    obj._ = obj.color;
+    obj.color.__doc__ = "Applies any styles and colors you pass in; accepts multiple arguments";
+    obj.foreground.__doc__ = "Sets the foreground color for the crayon";
+    obj.background.__doc__ = "Sets the background color for the crayon";
+    return obj.fgbg.__doc__ = "Takes two arguments -- a foreground color and a background color -- and applies those styles to the crayon";
   };
 
   makeStyleFunc = function(styles) {
