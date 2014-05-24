@@ -1,10 +1,9 @@
 # <img width="200" height="200" src="logo.png" alt="crayon"> crayon
 =====
 
-
 A module for adding ANSI terminal colors to your text.
 
-Works as a drop-in replacement for [chalk](https://github.com/sindresorhus/chalk) and is much faster, and supports 256 colors, and also logging.
+Works as a drop-in replacement for [chalk](https://github.com/sindresorhus/chalk), and is faster than chalk, supports 256 colors, a few other nifty features, and built-in logging.
 
 ## Usage
 
@@ -54,8 +53,8 @@ crayon.logger = require('npmlog');
 
 For color descriptions passed to functions, you can use any of the following:
 - The name of any CSS color (case-insensitive)
--
-
+- Any hex color (case-insensitive, leading '#' is optional)
+- Any ANSI color code 0-255 as a Number literal
 
 ## Notes
 
