@@ -1,10 +1,9 @@
 {
   "name": "crayon",
-  "version": "0.2.0",
-  "description": "crayon - Add colors to text on your terminal. A faster drop-in replacement for chalk that also adds 256 color support",
-  "main": "compat.js",
+  "version": "2.0.0",
+  "description": "crayon - Add colors to text on your terminal. A faster replacement for chalk that also adds 256 color support",
+  "main": "crayon.js",
   "dependencies": {
-    "chalk": "^0.4.0",
     "has-color": "^0.1.7",
     "strip-ansi": "^0.2.1"
   },

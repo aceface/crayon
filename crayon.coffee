@@ -5,13 +5,17 @@ An implementation of `chalk` with better performance characteristics
 
 """
 
-chalk = require 'chalk'
+util = require 'util'
+
 hasColor = require 'has-color'
 stripAnsi = require 'strip-ansi'
 
 ansi256css = require './ansi256css'
+cssToAnsi = require './css-to-ansi'
 
-codes =
+logLevels = ['log', 'info', 'debug', 'warn', 'error']
+
+basics =
   reset: [0, 0]
 
   bold: [1, 22]
@@ -39,80 +43,113 @@ codes =
   bgCyan: [46, 49]
   bgWhite: [47, 49]
 
-makeStyleFunc = (styleNames) ->
-  """Creates and returns a function that applies a series of styles to a string (or
-      list of string) argument(s)"""
+codes = {}
+for styleName, [begin, end] of basics
+  codes[styleName] = ['\u001b[' + begin + 'm', '\u001b[' + end + 'm']
 
-  (s0, s1, s2) ->
-    """Applies the style #{ styleNames.join '-' } to its (String) arguments"""
+for color, code of cssToAnsi
+  if basics[color]?
+    color = color + '_'
+  codes[color] = ['\u001b[38;5;' + code + 'm', '\u001b[39m']
+  codes['bg' + color[0].toUpperCase() + color[1...].toLowerCase()] = ['\u001b[48;5;' + code + 'm', '\u001b[49m']
 
-    switch arguments.length
-      when 0 then return ''
-      when 1 then s = s0
-      when 2 then s = s0 + ' ' + s1
-      when 3 then s = s0 + ' ' + s1 + ' ' + s2
-      else s = [].slice.call(arguments).join ' '
+addColorFuncs = (obj, prevStyles) ->
+  """Adds functions like `.red` to an object"""
 
-    if module.exports.enabled and s
-      for sn in styleNames
-        [begin, end] = codes[sn]
-        s = '\u001b[' + begin + 'm' + s + '\u001b[' + end + 'm'
+  for name, style of codes
 
+    do (name, style) ->
+      Object.defineProperty obj, name,
+        enumerable: true
+        configurable: true
+        get: ->
+          newStyles = prevStyles.concat [codes[name]]
+          f = makeStyleFunc newStyles
+          delete obj[name]
+          obj[name] = f
+
+  for [name, newStyleFunc] in [
+    ['foreground', (x) -> [foregroundCode getColorNumber x]]
+    ['background', (x) -> [backgroundCode getColorNumber x]]
+    ['fgbg', (fg, bg) ->  [foregroundCode(getColorNumber fg), backgroundCode(getColorNumber bg)]]
+    ['color', general]
+  ]
+    do (name, newStyleFunc) ->
+      obj[name] = (desc...) ->
+        makeStyleFunc prevStyles.concat newStyleFunc desc...
+
+  obj.fg = obj.foreground
+  obj.bg = obj.background
+  obj._ = obj.color
+
+
+makeStyleFunc = (styles) ->
+  """Returns a function that applies a list of styles
+
+    Styles are encoded using an Array with their literal escape sequences: [<begin>, <end>]"""
+
+  f = (args...) ->
+
+    s = util.format args...
+    if crayon.enabled
+      for [begin, end] in styles
+        s = begin + s + end
     s
 
-styleFuncs = (code, bgcode, otherStyles...) ->
-  """Call this as-is as a function and you can access the 256 color palette"""
+  addColorFuncs f, styles
 
-  fg = ansi256css code
+  for level in logLevels
+    do (level) ->
+      f[level] = (args...) ->
+        crayon.logger[level] f util.format args...
 
-  if bgcode?
-    bg = ansi256css bgcode
+  f
 
-  (s0, s1, s2) ->
-    switch arguments.length
-      when 0 then return ''
-      when 1 then s = s0
-      when 2 then s = s0 + ' ' + s1
-      when 3 then s = s0 + ' ' + s1 + ' ' + s2
-      else s = [].slice.call(arguments).join ' '
+getColorNumber = (desc) ->
+  num = ansi256css desc
+  unless num?
+    throw new Error "Don't understand the color '#{ desc }'"
+  num
 
-    if fg?
-      if bg?
-        s = '\u001b[38;5;' + fg + ';48;5;' + bg + 'm' + s + '\u001b[39;49m'
-      else
-        s = '\u001b[38;5;' + fg + 'm' + s + '\u001b[39m'
-    else
-      s = '\u001b[48;5;' + bg + 'm' + s + '\u001b[49m'
+foregroundCode = (number) -> ['\u001b[38;5;' + number + 'm', '\u001b[39m']
+backgroundCode = (number) -> ['\u001b[48;5;' + number + 'm', '\u001b[49m']
 
-    for os in otherStyles
-      s = module.exports[os] s
-
-    s
-
-for i, _ of codes
-  styleFuncs[i] = makeStyleFunc [i]
-  for j, _ of codes
-    f = styleFuncs[i][j] = makeStyleFunc [i, j]
-    for k, _ of codes
-      do (i, j, k) ->
-        Object.defineProperty f, k,
-          enumerable: true
-          configurable: true
-          get: -> chalk[i][j][k]
-          set: (val) ->
-            f[k] = val
+ansiStyle = (desc) ->
+  re = /^(bg|background):?\s*/i
+  unless re.test desc
+    foregroundCode getColorNumber desc
+  else
+    backgroundCode getColorNumber desc.replace(re, '')
 
 
-module.exports = styleFuncs
+general = (styles...) -> (codes[x] ? ansiStyle x for x in styles)
 
-module.exports.supportsColor = hasColor
-module.exports.stripColor = stripAnsi
+module.exports = crayon = (styles...) -> makeStyleFunc general
 
-unless module.exports.enabled?
-  module.exports.enabled = hasColor
+addColorFuncs crayon, []
 
-module.exports.__doc__ = require('fs').readFileSync __dirname + '/README.md'
+crayon.supportsColor = hasColor
+crayon.stripColor = stripAnsi
+
+unless crayon.enabled?
+  crayon.enabled = hasColor
+
+unless crayon.logger?
+  crayon.logger = console
+
+# Add the logging functions from the logger as properties on here so that
+# if the logger changes, you get different values for these
+for level in logLevels
+  do (level) ->
+    Object.defineProperty crayon, level,
+      enumerable: true
+      configurable: true
+      get: ->
+        crayon.logger[level]
+
+crayon.__doc__ = require('fs').readFileSync __dirname + '/README.md', 'utf8'
 
 pkg = require './package'
-module.exports.version = pkg.version
+crayon.version = pkg.version
+
 
