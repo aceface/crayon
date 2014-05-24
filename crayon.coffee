@@ -64,8 +64,6 @@ styleFuncs = (code, bgcode, otherStyles...) ->
   """Call this as-is as a function and you can access the 256 color palette"""
 
   fg = ansi256css code
-  unless fg?
-    throw new Error "Unknown color: #{ code }"
 
   if bgcode?
     bg = ansi256css bgcode
@@ -78,10 +76,13 @@ styleFuncs = (code, bgcode, otherStyles...) ->
       when 3 then s = s0 + ' ' + s1 + ' ' + s2
       else s = [].slice.call(arguments).join ' '
 
-    if bg?
-      s = '\u001b[38;5;' + fg + ';48;5;' + bg + 'm' + s + '\u001b[39;49m'
+    if fg?
+      if bg?
+        s = '\u001b[38;5;' + fg + ';48;5;' + bg + 'm' + s + '\u001b[39;49m'
+      else
+        s = '\u001b[38;5;' + fg + 'm' + s + '\u001b[39m'
     else
-      s = '\u001b[38;5;' + fg + 'm' + s + '\u001b[39m'
+      s = '\u001b[48;5;' + bg + 'm' + s + '\u001b[49m'
 
     for os in otherStyles
       s = module.exports[os] s

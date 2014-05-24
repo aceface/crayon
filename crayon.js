@@ -76,9 +76,6 @@
     code = arguments[0], bgcode = arguments[1], otherStyles = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
     "Call this as-is as a function and you can access the 256 color palette";
     fg = ansi256css(code);
-    if (fg == null) {
-      throw new Error("Unknown color: " + code);
-    }
     if (bgcode != null) {
       bg = ansi256css(bgcode);
     }
@@ -99,10 +96,14 @@
         default:
           s = [].slice.call(arguments).join(' ');
       }
-      if (bg != null) {
-        s = '\u001b[38;5;' + fg + ';48;5;' + bg + 'm' + s + '\u001b[39;49m';
+      if (fg != null) {
+        if (bg != null) {
+          s = '\u001b[38;5;' + fg + ';48;5;' + bg + 'm' + s + '\u001b[39;49m';
+        } else {
+          s = '\u001b[38;5;' + fg + 'm' + s + '\u001b[39m';
+        }
       } else {
-        s = '\u001b[38;5;' + fg + 'm' + s + '\u001b[39m';
+        s = '\u001b[48;5;' + bg + 'm' + s + '\u001b[49m';
       }
       for (_i = 0, _len = otherStyles.length; _i < _len; _i++) {
         os = otherStyles[_i];
