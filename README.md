@@ -54,7 +54,7 @@ crayon.logger = require('npmlog');
 For color descriptions passed to functions, you can use any of the following:
 - The name of any CSS color (case-insensitive)
 - Any hex color (case-insensitive, leading '#' is optional)
-- Any ANSI color code 0-255 as a Number literal
+- Any ANSI color code 0-255 as a Number
 
 ## Notes
 
