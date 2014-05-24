@@ -52,8 +52,6 @@ var crayon = require('crayon');
 console.log(crayon('darkred')("The foreground color is set to dark red here"));
 console.log(crayon('goldenrod', 'dodgerblue')("yellow on blue background"));
 console.log(crayon('goldenrod', 'dodgerblue', 'inverse', 'underline')("inverted and underlined"));
-
-
 ```
 
 You can pass in any ANSI 256 color code, CSS color name, or CSS hex description of a color. The first argument sets the 
