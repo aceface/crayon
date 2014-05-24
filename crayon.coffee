@@ -9,6 +9,8 @@ chalk = require 'chalk'
 hasColor = require 'has-color'
 stripAnsi = require 'strip-ansi'
 
+ansi256css = require './ansi256css'
+
 codes =
   reset: [0, 0]
 
@@ -37,7 +39,6 @@ codes =
   bgCyan: [46, 49]
   bgWhite: [47, 49]
 
-
 makeStyleFunc = (styleNames) ->
   """Creates and returns a function that applies a series of styles to a string (or
       list of string) argument(s)"""
@@ -59,7 +60,33 @@ makeStyleFunc = (styleNames) ->
 
     s
 
-styleFuncs = {}
+styleFuncs = (code, bgcode, otherStyles...) ->
+  """Call this as-is as a function and you can access the 256 color palette"""
+
+  fg = ansi256css code
+  unless fg?
+    throw new Error "Unknown color: #{ code }"
+
+  if bgcode?
+    bg = ansi256css bgcode
+
+  (s0, s1, s2) ->
+    switch arguments.length
+      when 0 then return ''
+      when 1 then s = s0
+      when 2 then s = s0 + ' ' + s1
+      when 3 then s = s0 + ' ' + s1 + ' ' + s2
+      else s = [].slice.call(arguments).join ' '
+
+    if bg?
+      s = '\u001b[38;5;' + fg + ';48;5;' + bg + 'm' + s + '\u001b[39;49m'
+    else
+      s = '\u001b[38;5;' + fg + 'm' + s + '\u001b[39m'
+
+    for os in otherStyles
+      s = module.exports[os] s
+
+    s
 
 for i, _ of codes
   styleFuncs[i] = makeStyleFunc [i]
@@ -73,7 +100,6 @@ for i, _ of codes
           get: -> chalk[i][j][k]
           set: (val) ->
             f[k] = val
-
 
 
 module.exports = styleFuncs
