@@ -1,7 +1,7 @@
 "use strict"
 
 __doc__ = """
-An implementation of `chalk` with better performance characteristics
+An implementation of `chalk` with better performance characteristics, 256 color support, a few other features, and built-in logging.
 
 """
 

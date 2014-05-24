@@ -4,7 +4,7 @@
   var addColorFuncs, ansi256css, ansiStyle, backgroundCode, basics, begin, code, codes, color, crayon, cssToAnsi, end, foregroundCode, general, getColorNumber, hasColor, level, logLevels, makeStyleFunc, pkg, stripAnsi, styleName, util, __doc__, _fn, _i, _len, _ref,
     __slice = [].slice;
 
-  __doc__ = "An implementation of `chalk` with better performance characteristics\n";
+  __doc__ = "An implementation of `chalk` with better performance characteristics, 256 color support, a few other features, and built-in logging.\n";
 
   util = require('util');
 
