@@ -3,10 +3,12 @@ crayon
 
 A faster version of [chalk](https://github.com/sindresorhus/chalk) -- a module for adding ANSI terminal colors to your text.
 
-This should do the exact same thing as `chalk` with the same API.
+This module does the exact same thing as `chalk` with the same API except
+that `crayon` is much faster for most use cases and also has 256 color 
+support.
 
-It should be a bit faster because it doesn't create dynamic getters as you go
-in the common cases where you are only making a simple call like `.red` or 
+Crayon is faster thank chalk because it doesn't create dynamic getters as you 
+go in the common cases where you are only making a simple call like `.red` or 
 chaining one level deep like `.red.bgGreen`.
 
 It also doesn't do an `arguments.slice` and `join` if it doesn't need to, 
@@ -42,9 +44,10 @@ console.log(  crayon.red('Hello', crayon.underline.bgBlue('world') + '!')  );
 console.log(  crayon.blue('Hello', 'World!', 'Foo', 'bar', 'biz', 'baz')  );
 ```
 
-You can also use the 256 color ANSI palette this module. The interface is
-slightly different than the way you access the normal colors. An example:
-```
+You can also use the 256 color ANSI palette this module. For now, the 
+interface is slightly different than the way you access the normal colors. 
+
+```js
 var crayon = require('crayon');
 console.log(crayon('darkred')("The foreground color is set to dark red here"));
 console.log(crayon('goldenrod', 'dodgerblue')("yellow on blue background"));
