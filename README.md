@@ -19,9 +19,10 @@ If you chain styles more than 2 levels deep, it will start using `chalk`'s
 dynamic getters, and if you give more then 3 strings as arguments, it
 will start using `arguments.slice`.
 
-Simple usage is the same as `chalk`
 
 ## Usage
+
+Simple usage is the same as `chalk`.
 
 Chalk comes with an easy to use composable API where you just chain and nest the styles you want. `crayon` supports this API as well.
 
@@ -49,8 +50,14 @@ interface is slightly different than the way you access the normal colors.
 
 ```js
 var crayon = require('crayon');
+
+// Set the foreground color
 console.log(crayon('darkred')("The foreground color is set to dark red here"));
+
+// Set the foreground and background colors
 console.log(crayon('goldenrod', 'dodgerblue')("yellow on blue background"));
+
+// Mix in other chalk styles as well
 console.log(crayon('goldenrod', 'dodgerblue', 'inverse', 'underline')("inverted and underlined"));
 ```
 
