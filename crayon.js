@@ -182,7 +182,7 @@
   module.exports = crayon = function() {
     var styles;
     styles = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-    return makeStyleFunc(general);
+    return makeStyleFunc(general.apply(null, styles));
   };
 
   addColorFuncs(crayon, []);

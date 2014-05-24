@@ -124,7 +124,7 @@ ansiStyle = (desc) ->
 
 general = (styles...) -> (codes[x] ? ansiStyle x for x in styles)
 
-module.exports = crayon = (styles...) -> makeStyleFunc general
+module.exports = crayon = (styles...) -> makeStyleFunc general styles...
 
 addColorFuncs crayon, []
 
