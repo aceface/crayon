@@ -31,6 +31,9 @@ console.log(  crayon.blue('Hello'), 'World' + crayon.red('!')  );
 // Compose multiple styles using the chainable API
 console.log(  crayon.blue.bgRed.bold('Hello world!')  );
 
+// Or just compose styles by passing strings to the crayon function
+crayon('red bgblue', 'underline').log('this is red on a blue background');
+
 // Nest styles
 console.log(  crayon.red('Hello', crayon.underline.bgBlue('world') + '!')  );
 

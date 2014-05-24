@@ -123,14 +123,15 @@ foregroundCode = (number) -> ['\u001b[38;5;' + number + 'm', '\u001b[39m']
 backgroundCode = (number) -> ['\u001b[48;5;' + number + 'm', '\u001b[49m']
 
 ansiStyle = (desc) ->
-  re = /^(bg|background):?\s*/i
+  re = /^(bg|background):?/i
   unless re.test desc
     foregroundCode getColorNumber desc
   else
     backgroundCode getColorNumber desc.replace(re, '')
 
+splitFlatten = (list) -> [].concat.apply [], (x.split /\s+/ for x in list)
 
-general = (styles...) -> (codes[x] ? ansiStyle x for x in styles.reverse())
+general = (styles...) ->  (codes[x] ? ansiStyle x for x in splitFlatten(styles).reverse())
 
 module.exports = crayon = (styles...) -> makeStyleFunc general styles...
 
