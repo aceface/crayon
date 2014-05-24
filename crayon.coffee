@@ -130,7 +130,7 @@ ansiStyle = (desc) ->
     backgroundCode getColorNumber desc.replace(re, '')
 
 
-general = (styles...) -> (codes[x] ? ansiStyle x for x in styles)
+general = (styles...) -> (codes[x] ? ansiStyle x for x in styles.reverse())
 
 module.exports = crayon = (styles...) -> makeStyleFunc general styles...
 

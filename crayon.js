@@ -176,12 +176,13 @@
   };
 
   general = function() {
-    var styles, x, _i, _len, _ref1, _results;
+    var styles, x, _i, _len, _ref1, _ref2, _results;
     styles = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    _ref1 = styles.reverse();
     _results = [];
-    for (_i = 0, _len = styles.length; _i < _len; _i++) {
-      x = styles[_i];
-      _results.push((_ref1 = codes[x]) != null ? _ref1 : ansiStyle(x));
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      x = _ref1[_i];
+      _results.push((_ref2 = codes[x]) != null ? _ref2 : ansiStyle(x));
     }
     return _results;
   };
