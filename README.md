@@ -1,6 +1,8 @@
 crayon
 =====
 
+# <img width="250" src="logo.png" alt="crayon">
+
 A faster version of [chalk](https://github.com/sindresorhus/chalk) -- a module for adding ANSI terminal colors to your text.
 
 This module does the exact same thing as `chalk` with the same API except
