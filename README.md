@@ -54,6 +54,8 @@ console.log(crayon('goldenrod', 'dodgerblue')("yellow on blue background"));
 console.log(crayon('goldenrod', 'dodgerblue', 'inverse', 'underline')("inverted and underlined"));
 ```
 
-You can pass in any ANSI 256 color code, CSS color name, or CSS hex description of a color. The first argument sets the 
+You can pass in any ANSI 256 color code, CSS color name, or CSS hex description of a color. The first argument sets the foreground color; the second argument 
+is optional and sets the background color. All other arguments are styles you
+could give to chalk that will be also applied, ex. `'underline'` or `'inverse'`.
 
 
