@@ -71,7 +71,7 @@
         configurable: true,
         get: function() {
           var f, newStyles;
-          newStyles = prevStyles.concat([codes[name]]);
+          newStyles = [codes[name]].concat(prevStyles);
           f = makeStyleFunc(newStyles);
           f.__doc__ = "Applies the style '" + name + "' to the crayon";
           delete obj[name];
@@ -102,7 +102,7 @@
       return obj[name] = function() {
         var desc;
         desc = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-        return makeStyleFunc(prevStyles.concat(newStyleFunc.apply(null, desc)));
+        return makeStyleFunc(newStyleFunc.apply(null, desc).concat(prevStyles));
       };
     };
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {

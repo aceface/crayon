@@ -65,7 +65,7 @@ addColorFuncs = (obj, prevStyles) ->
         enumerable: true
         configurable: true
         get: ->
-          newStyles = prevStyles.concat [codes[name]]
+          newStyles = [codes[name]].concat prevStyles
           f = makeStyleFunc newStyles
           f.__doc__ = """Applies the style '#{ name }' to the crayon"""
           delete obj[name]
@@ -79,7 +79,7 @@ addColorFuncs = (obj, prevStyles) ->
   ]
     do (name, newStyleFunc) ->
       obj[name] = (desc...) ->
-        makeStyleFunc prevStyles.concat newStyleFunc desc...
+        makeStyleFunc newStyleFunc(desc...).concat prevStyles
 
   obj.fg = obj.foreground
   obj.bg = obj.background
