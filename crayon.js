@@ -234,6 +234,19 @@
     _fn(level);
   }
 
+  Object.defineProperty(crayon, 'success', {
+    enumerable: true,
+    configurable: true,
+    get: function() {
+      var _ref1, _ref2;
+      return (_ref1 = (_ref2 = crayon.logger) != null ? _ref2.success : void 0) != null ? _ref1 : function() {
+        var args, _ref3;
+        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        return (_ref3 = crayon.green).log.apply(_ref3, args);
+      };
+    }
+  });
+
   crayon.__doc__ = require('fs').readFileSync(__dirname + '/README.md', 'utf8');
 
   pkg = require('./package');

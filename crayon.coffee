@@ -156,8 +156,16 @@ for level in logLevels
       get: ->
         crayon.logger[level]
 
-crayon.__doc__ = require('fs').readFileSync __dirname + '/README.md', 'utf8'
+# For rough compatibility with the API of jharding's crayon module
+# that is currently "crayon" in npm. (https://github.com/jharding/crayon)
+Object.defineProperty crayon, 'success',
+  enumerable: true
+  configurable: true
+  get: ->
+    crayon.logger?.success ? (args...) ->
+      crayon.green.log args...
 
+crayon.__doc__ = require('fs').readFileSync __dirname + '/README.md', 'utf8'
 pkg = require './package'
 crayon.version = pkg.version
 
