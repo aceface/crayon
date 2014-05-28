@@ -164,7 +164,14 @@ ansiStyle = (desc) ->
   else
     backgroundCode getColorNumber desc.replace(re, '')
 
-splitFlatten = (list) -> [].concat.apply [], (if typeof x is 'string' then x.split /\s+/ else x for x in list)
+splitFlatten = (list) ->
+  """Turns something like ['red blue', 'white'] into ['red', 'blue', 'white']"""
+  split = (x) ->
+    if typeof x is 'string'
+      x.split /\s+/
+    else
+      [x]
+  [].concat.apply [], (split x for x in list)
 
 general = (styles...) ->  (codes[x] ? ansiStyle x for x in splitFlatten(styles).reverse())
 
@@ -207,5 +214,7 @@ crayon.palette = ->
 crayon.__doc__ = require('fs').readFileSync __dirname + '/README.md', 'utf8'
 pkg = require './package'
 crayon.version = pkg.version
+
+crayon.splitFlatten = splitFlatten
 
 

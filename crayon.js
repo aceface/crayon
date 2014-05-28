@@ -228,20 +228,24 @@
   };
 
   splitFlatten = function(list) {
-    var x;
-    return [].concat.apply([], ((function() {
-      var _i, _len, _results;
+    "Turns something like ['red blue', 'white'] into ['red', 'blue', 'white']";
+    var split, x;
+    split = function(x) {
       if (typeof x === 'string') {
         return x.split(/\s+/);
       } else {
-        _results = [];
-        for (_i = 0, _len = list.length; _i < _len; _i++) {
-          x = list[_i];
-          _results.push(x);
-        }
-        return _results;
+        return [x];
       }
-    })()));
+    };
+    return [].concat.apply([], (function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = list.length; _i < _len; _i++) {
+        x = list[_i];
+        _results.push(split(x));
+      }
+      return _results;
+    })());
   };
 
   general = function() {
@@ -321,5 +325,7 @@
   pkg = require('./package');
 
   crayon.version = pkg.version;
+
+  crayon.splitFlatten = splitFlatten;
 
 }).call(this);
