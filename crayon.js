@@ -249,13 +249,20 @@
   };
 
   general = function() {
-    var styles, x, _i, _len, _ref1, _ref2, _results;
+    var styles, t, x, _i, _len, _ref1, _results;
     styles = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    t = function(x) {
+      if (codes[x] != null) {
+        return styleFunc.apply(null, codes[x]);
+      } else {
+        return ansiStyle(x);
+      }
+    };
     _ref1 = splitFlatten(styles).reverse();
     _results = [];
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
       x = _ref1[_i];
-      _results.push((_ref2 = codes[x]) != null ? _ref2 : ansiStyle(x));
+      _results.push(t(x));
     }
     return _results;
   };

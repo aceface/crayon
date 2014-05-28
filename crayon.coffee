@@ -173,7 +173,13 @@ splitFlatten = (list) ->
       [x]
   [].concat.apply [], (split x for x in list)
 
-general = (styles...) ->  (codes[x] ? ansiStyle x for x in splitFlatten(styles).reverse())
+general = (styles...) ->
+  t = (x) ->
+    if codes[x]?
+      styleFunc codes[x]...
+    else
+      ansiStyle x
+  (t x for x in splitFlatten(styles).reverse())
 
 module.exports = crayon = (styles...) -> makeStyleFunc general styles...
 
