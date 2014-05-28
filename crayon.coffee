@@ -13,7 +13,7 @@ stripAnsi = require 'strip-ansi'
 ansi256css = require './ansi256css'
 cssToAnsi = require './css-to-ansi'
 
-logLevels = ['log', 'info', 'debug', 'warn', 'error']
+logLevels = ['log', 'info', 'warn', 'error']
 
 basics =
   reset: [0, 0]

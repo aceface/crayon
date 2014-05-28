@@ -17,7 +17,7 @@
 
   cssToAnsi = require('./css-to-ansi');
 
-  logLevels = ['log', 'info', 'debug', 'warn', 'error'];
+  logLevels = ['log', 'info', 'warn', 'error'];
 
   basics = {
     reset: [0, 0],
