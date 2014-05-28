@@ -129,7 +129,7 @@ ansiStyle = (desc) ->
   else
     backgroundCode getColorNumber desc.replace(re, '')
 
-splitFlatten = (list) -> [].concat.apply [], (x.split /\s+/ for x in list)
+splitFlatten = (list) -> [].concat.apply [], (if typeof x is 'string' then x.split /\s+/ else x for x in list)
 
 general = (styles...) ->  (codes[x] ? ansiStyle x for x in splitFlatten(styles).reverse())
 
@@ -164,6 +164,20 @@ Object.defineProperty crayon, 'success',
   get: ->
     crayon.logger?.success ? (args...) ->
       crayon.green.log args...
+
+VERY_DARK_COLORS = [0, 16, 17, 18, 232, 233, 234, 235 ]
+crayon.palette = ->
+  """Displays all the colors"""
+  crayon.log crayon.inverse (crayon(i)("  #{ if i in VERY_DARK_COLORS then crayon.bgWhite i else i }  ") for i in [0...256]).join ''
+
+crayon.rainbow = (args...) ->
+  """Generates rainbow text"""
+  # Would be nice to have this as a regular style func, but too complicated for now
+  if crayon.enabled
+    (crayon(i * 19 % 256 + 12 * (i in VERY_DARK_COLORS))(c) for c, i in util.format args...).join ''
+  else
+    util.format args...
+
 
 crayon.__doc__ = require('fs').readFileSync __dirname + '/README.md', 'utf8'
 pkg = require './package'
