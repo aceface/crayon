@@ -45,6 +45,8 @@ basics =
 
 basics.grey = basics.gray
 
+VERY_DARK_COLORS = [0, 16, 17, 18, 232, 233, 234, 235 ]
+
 codes = {}
 for styleName, [begin, end] of basics
   codes[styleName] = ['\u001b[' + begin + 'm', '\u001b[' + end + 'm']
@@ -54,6 +56,8 @@ for color, code of cssToAnsi
     color = color + '_'
   codes[color] = ['\u001b[38;5;' + code + 'm', '\u001b[39m']
   codes['bg' + color[0].toUpperCase() + color[1...].toLowerCase()] = ['\u001b[48;5;' + code + 'm', '\u001b[49m']
+
+_rainbow = (s) -> (crayon(i * 19 % 256 + 12 * (i in VERY_DARK_COLORS))(c) for c, i in stripAnsi s).join ''
 
 addColorFuncs = (obj, prevStyles) ->
   """Adds functions like `.red` to an object"""
@@ -65,7 +69,7 @@ addColorFuncs = (obj, prevStyles) ->
         enumerable: true
         configurable: true
         get: ->
-          newStyles = [codes[name]].concat prevStyles
+          newStyles = [styleFunc codes[name]...].concat prevStyles
           f = makeStyleFunc newStyles
           f.__doc__ = """Applies the style '#{ name }' to the crayon"""
           delete obj[name]
@@ -85,23 +89,34 @@ addColorFuncs = (obj, prevStyles) ->
   obj.bg = obj.background
   obj._ = obj.color
 
+  Object.defineProperty obj, 'rainbow',
+    enumerable: true
+    configurable: true
+    get: ->
+      newStyles = [_rainbow].concat prevStyles
+      f = makeStyleFunc newStyles
+      f.__doc__ = """Applies rainbow styling to the crayon!"""
+      delete obj.rainbow
+      obj.rainbow = f
+
   obj.color.__doc__ = """Applies any styles and colors you pass in; accepts multiple arguments"""
   obj.foreground.__doc__ = """Sets the foreground color for the crayon"""
   obj.background.__doc__ = """Sets the background color for the crayon"""
   obj.fgbg.__doc__ = """Takes two arguments -- a foreground color and a background color -- and applies those styles to the crayon"""
 
+styleFunc = (begin, end) -> (s) -> begin + s + end
 
 makeStyleFunc = (styles) ->
   """Returns a function that applies a list of styles
 
-    Styles are encoded using an Array with their literal escape sequences: [<begin>, <end>]"""
+    Styles are encoded using an Array of functions"""
 
   f = (args...) ->
 
     s = util.format args...
     if crayon.enabled
-      for [begin, end] in styles
-        s = begin + s + end
+      for style in styles
+        s = style s
     s
 
   addColorFuncs f, styles
@@ -119,8 +134,8 @@ getColorNumber = (desc) ->
     throw new Error "Don't understand the color '#{ desc }'"
   num
 
-foregroundCode = (number) -> ['\u001b[38;5;' + number + 'm', '\u001b[39m']
-backgroundCode = (number) -> ['\u001b[48;5;' + number + 'm', '\u001b[49m']
+foregroundCode = (number) -> styleFunc '\u001b[38;5;' + number + 'm', '\u001b[39m'
+backgroundCode = (number) -> styleFunc '\u001b[48;5;' + number + 'm', '\u001b[49m'
 
 ansiStyle = (desc) ->
   re = /^(bg|background):?/i
@@ -165,19 +180,9 @@ Object.defineProperty crayon, 'success',
     crayon.logger?.success ? (args...) ->
       crayon.green.log args...
 
-VERY_DARK_COLORS = [0, 16, 17, 18, 232, 233, 234, 235 ]
 crayon.palette = ->
   """Displays all the colors"""
   crayon.log crayon.inverse (crayon(i)("  #{ if i in VERY_DARK_COLORS then crayon.bgWhite i else i }  ") for i in [0...256]).join ''
-
-crayon.rainbow = (args...) ->
-  """Generates rainbow text"""
-  # Would be nice to have this as a regular style func, but too complicated for now
-  if crayon.enabled
-    (crayon(i * 19 % 256 + 12 * (i in VERY_DARK_COLORS))(c) for c, i in util.format args...).join ''
-  else
-    util.format args...
-
 
 crayon.__doc__ = require('fs').readFileSync __dirname + '/README.md', 'utf8'
 pkg = require './package'
