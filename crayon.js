@@ -98,7 +98,7 @@
 
   addColorFuncs = function(obj, prevStyles) {
     "Adds functions like `.red` to an object";
-    var name, newStyleFunc, style, _fn, _fn1, _i, _len, _ref1, _ref2;
+    var n, name, newStyleFunc, style, _fn, _fn1, _fn2, _i, _j, _len, _ref1, _ref2;
     _fn = function(name, style) {
       return Object.defineProperty(obj, name, {
         enumerable: true,
@@ -117,6 +117,40 @@
       style = codes[name];
       _fn(name, style);
     }
+    _fn1 = function(n) {
+      var x, _j, _len, _ref1;
+      _ref1 = ["" + n, "_" + n];
+      for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
+        x = _ref1[_j];
+        Object.defineProperty(obj, x, {
+          enumerable: true,
+          configurable: true,
+          get: function() {
+            var f, newStyles;
+            newStyles = [foregroundCode(n)].concat(prevStyles);
+            f = makeStyleFunc(newStyles);
+            f.___doc___ = "Sets the foreground color of the crayon to " + n;
+            delete obj[n];
+            return obj[n] = f;
+          }
+        });
+      }
+      return Object.defineProperty(obj, "bg" + n, {
+        enumerable: true,
+        configurable: true,
+        get: function() {
+          var f, newStyles;
+          newStyles = [backgroundCode(n)].concat(prevStyles);
+          f = makeStyleFunc(newStyles);
+          f.___doc___ = "Sets the background color of the crayon to " + n;
+          delete obj[n];
+          return obj[n] = f;
+        }
+      });
+    };
+    for (n = _i = 0; _i < 256; n = ++_i) {
+      _fn1(n);
+    }
     _ref1 = [
       [
         'foreground', function(x) {
@@ -132,16 +166,16 @@
         }
       ], ['color', general]
     ];
-    _fn1 = function(name, newStyleFunc) {
+    _fn2 = function(name, newStyleFunc) {
       return obj[name] = function() {
         var desc;
         desc = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         return makeStyleFunc(newStyleFunc.apply(null, desc).concat(prevStyles));
       };
     };
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      _ref2 = _ref1[_i], name = _ref2[0], newStyleFunc = _ref2[1];
-      _fn1(name, newStyleFunc);
+    for (_j = 0, _len = _ref1.length; _j < _len; _j++) {
+      _ref2 = _ref1[_j], name = _ref2[0], newStyleFunc = _ref2[1];
+      _fn2(name, newStyleFunc);
     }
     obj.fg = obj.foreground;
     obj.bg = obj.background;

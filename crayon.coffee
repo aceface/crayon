@@ -95,6 +95,30 @@ addColorFuncs = (obj, prevStyles) ->
           delete obj[name]
           obj[name] = f
 
+  for n in [0...256]
+    do (n) ->
+      for x in ["#{ n }", "_#{ n }"]
+        Object.defineProperty obj, x,
+          enumerable: true
+          configurable: true
+          get: ->
+            newStyles = [foregroundCode n].concat prevStyles
+            f = makeStyleFunc newStyles
+            f.___doc___ = """Sets the foreground color of the crayon to #{ n }"""
+            delete obj[n]
+            obj[n] = f
+
+      Object.defineProperty obj, "bg#{ n }",
+        enumerable: true
+        configurable: true
+        get: ->
+          newStyles = [backgroundCode n].concat prevStyles
+          f = makeStyleFunc newStyles
+          f.___doc___ = """Sets the background color of the crayon to #{ n }"""
+          delete obj[n]
+          obj[n] = f
+
+
   for [name, newStyleFunc] in [
     ['foreground', (x) -> [foregroundCode getColorNumber x]]
     ['background', (x) -> [backgroundCode getColorNumber x]]
