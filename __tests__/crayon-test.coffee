@@ -14,8 +14,8 @@ describe 'crayon', ->
   it "Can be called like `crayon('red')`", ->
     expect(crayon("red") "test me!").toBe '\u001b[31mtest me!\u001b[39m'
 
-  it "Can be called with a chain of things like `crayon.red.bgBrightWhite`", ->
-    expect(crayon.red.bgBrightWhite "test me!").toBe '\u001b[31m\u001b[107mtest me!\u001b[49m\u001b[39m'
+  it "Can be called with a chain of things like `crayon.red.bgBrightwhite`", ->
+    expect(crayon.red.bgBrightwhite "test me!").toBe '\u001b[31m\u001b[107mtest me!\u001b[49m\u001b[39m'
 
   it "Can be called with complicated parameters spearate by spaces and commas", ->
     expect(crayon("bgred", "#ffcc00 underline") "test me!").toBe '\u001b[48;5;196m\u001b[38;5;220m\u001b[4mtest me!\u001b[24m\u001b[39m\u001b[49m'

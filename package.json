@@ -1,6 +1,6 @@
 {
-  "name": "crayon",
-  "version": "2.1.0",
+  "name": "crayon-terminal",
+  "version": "3.0.0",
   "description": "crayon - Add colors to text on your terminal. A faster replacement for chalk that also adds 256 color support",
   "main": "crayon.js",
   "dependencies": {
@@ -22,7 +22,7 @@
     "type": "git",
     "url": "https://github.com/aceface/crayon.git"
   },
-  "author": "",
+  "author": "Charlie Cheever <ccheever@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/aceface/crayon/issues"
